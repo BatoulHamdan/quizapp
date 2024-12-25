@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
@@ -13,11 +14,22 @@ class UsersTableSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->insert([
-            ['id' => 7, 'firstname' => 'Tala', 'lastname' => 'Hamdan', 'email' => 'tala.hamdan@gmail.com', 'username' => 'Tala19', 'password' => bcrypt('tala123')],
-            ['id' => 8, 'firstname' => 'Manar', 'lastname' => 'Shreif', 'email' => 'manarshreif@gmail.com', 'username' => 'Manoura', 'password' => bcrypt('manar1122')],
-            ['id' => 19, 'firstname' => 'Ali', 'lastname' => 'Al Moussawi', 'email' => 'moussawiali2002@gmail.com', 'username' => 'Abo 3lesh', 'password' => bcrypt('ali2002')],
-            .
+            [
+                'id' => 7,
+                'firstname' => 'Tala',
+                'lastname' => 'Hamdan',
+                'email' => 'tala.hamdan@gmail.com',
+                'username' => 'Tala19',
+                'password' => Hash::make('tala123'),
+            ],
+            [
+                'id' => 8,
+                'firstname' => 'Fatima',
+                'lastname' => 'Harb',
+                'email' => 'fatimahrb@gmail.com',
+                'username' => 'Fatima9',
+                'password' => Hash::make('fatima123'),
+            ],
         ]);
-        
     }
 }
