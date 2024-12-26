@@ -42,6 +42,36 @@
             @else
                 <p class="mt-4 text-gray-600">No questions found for this quiz.</p>
             @endif
+            
+            <!-- Quiz Link Generator Section -->
+            <div class="mt-8">
+                <h3 class="text-xl font-semibold mb-4">Quiz Link Generator</h3>
+                <form id="quizForm">
+                    <div>
+                        <button class="header__button bg-green-500 text-white px-4 py-2 rounded mr-2" 
+                                type="button" onclick="generateQuizLink()">Generate Quiz Link</button>
+                        <button class="header__button bg-blue-500 text-white px-4 py-2 rounded" 
+                                type="button" onclick="copyQuizLink()">Copy Link</button>
+                        <br><br>
+                        <textarea id="quizLink" readonly class="w-full border p-2 rounded"></textarea>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
+    <script>
+        function generateQuizLink() {
+            var quizLink = window.location.origin + '/{{ $quiz->id }}';
+            document.getElementById('quizLink').value = quizLink;
+        }
+
+        function copyQuizLink() {
+            var quizLinkElement = document.getElementById('quizLink');
+            quizLinkElement.select();
+            document.execCommand('copy');
+            quizLinkElement.setSelectionRange(0, 0);
+            alert('Quiz link copied to clipboard!');
+        }
+    </script>
 @endsection
