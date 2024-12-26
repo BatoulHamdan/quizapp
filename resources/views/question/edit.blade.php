@@ -1,68 +1,65 @@
-@extends('layouts.guest')
-
-@section('title', 'Edit Profile')
+@extends('layouts.app')
 
 @section('content')
     <div class="container mx-auto py-8">
-        <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-6 text-center">Edit Your Profile</h2>
+        <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6 text-center">Edit Question</h2>
 
-            @if(session('status'))
-                <div class="mb-4 bg-green-100 text-green-700 p-4 rounded">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mb-4 bg-red-100 text-red-700 p-4 rounded">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            <form action="{{ route('profile.update') }}" method="POST">
+            <form method="POST" action="{{ route('questions.update', [$quiz->id, $question->id]) }}" class="space-y-4">
                 @csrf
                 @method('PUT')
 
-                <div class="mb-4">
-                    <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
-                    <input type="text" id="firstname" name="firstname" value="{{ old('firstname', $user->firstname) }}" required
-                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    @error('firstname')
-                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                <label class="block">
+                    <span class="text-gray-700">Question</span>
+                    <input type="text" name="question" value="{{ old('question', $question->question) }}" class="mt-1 block w-full border-gray-300 rounded">
+                    @error('question')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
-                </div>
+                </label>
 
-                <div class="mb-4">
-                    <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
-                    <input type="text" id="lastname" name="lastname" value="{{ old('lastname', $user->lastname) }}" required
-                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    @error('lastname')
-                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                <label class="block">
+                    <span class="text-gray-700">Choice 1</span>
+                    <input type="text" name="choice_1" value="{{ old('choice_1', $question->choice_1) }}" class="mt-1 block w-full border-gray-300 rounded">
+                    @error('choice_1')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
-                </div>
+                </label>
 
-                <div class="mb-4">
-                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                    <input type="text" id="username" name="username" value="{{ old('username', $user->username) }}" required
-                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    @error('username')
-                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                <label class="block">
+                    <span class="text-gray-700">Choice 2</span>
+                    <input type="text" name="choice_2" value="{{ old('choice_2', $question->choice_2) }}" class="mt-1 block w-full border-gray-300 rounded">
+                    @error('choice_2')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
-                </div>
+                </label>
 
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required
-                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    @error('email')
-                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                <label class="block">
+                    <span class="text-gray-700">Choice 3</span>
+                    <input type="text" name="choice_3" value="{{ old('choice_3', $question->choice_3) }}" class="mt-1 block w-full border-gray-300 rounded">
+                    @error('choice_3')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
-                </div>
+                </label>
 
-                <div class="flex items-center justify-center">
-                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow hover:bg-indigo-700">
-                        Update Profile
-                    </button>
+                <label class="block">
+                    <span class="text-gray-700">Choice 4</span>
+                    <input type="text" name="choice_4" value="{{ old('choice_4', $question->choice_4) }}" class="mt-1 block w-full border-gray-300 rounded">
+                    @error('choice_4')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </label>
+
+                <label class="block">
+                    <span class="text-gray-700">Answer</span>
+                    <input type="text" name="answer" value="{{ old('answer', $question->answer) }}" class="mt-1 block w-full border-gray-300 rounded">
+                    @error('answer')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </label>
+
+                <div class="flex space-x-4">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Save Changes</button>
+                    <a href="{{ route('quizzes.show', $quiz->id) }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</a>
                 </div>
             </form>
         </div>

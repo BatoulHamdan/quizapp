@@ -9,115 +9,129 @@ use Illuminate\Http\Request;
 class QuestionController extends Controller
 {
     /**
-     * Display a listing of the questions.
+     * Display a listing of the questions for a specific quiz.
      *
-     * @param  Quiz  $quiz
+     * @param  int  $quizId
      * @return \Illuminate\Http\Response
      */
-
-    public function create(Quiz $quiz)
+    public function index($quizId)
     {
-        return view('question.create', compact('quiz'));
-    }
-
-
-    public function index(Quiz $quiz)
-    {
-        // Fetch all questions with their related quizzes
-        $questions = Question::with('quiz')->where('idquiz', $quiz->id)->get();
-        return response()->json($questions);
+        $quiz = Quiz::findOrFail($quizId);
+        $questions = $quiz->questions; // Access related questions
+        return view('questions.index', compact('questions', 'quiz'));
     }
 
     /**
      * Show the form for creating a new question.
      *
+     * @param  int  $quizId
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Quiz $quiz)
+    public function create($quizId)
     {
-        $validatedData = $request->validate([  
+        $quiz = Quiz::findOrFail($quizId);
+        return view('questions.create', compact('quiz'));
+    }
+
+    /**
+     * Store a newly created question in the database.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $quizId
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request, $quizId)
+    {
+        $request->validate([
             'question' => 'required|string|max:255',
             'choice_1' => 'required|string|max:255',
             'choice_2' => 'required|string|max:255',
             'choice_3' => 'required|string|max:255',
             'choice_4' => 'required|string|max:255',
-            'answer' => 'required|string|max:1',
+            'answer' => 'required|integer|in:1,2,3,4',  // Assuming 1-4 for choice options
         ]);
 
-        // Insert question into the questions table
-        $question = new Question([
-            'idquiz' => $quiz->id,   
-            'question' => $validatedData['question'],
-            'choice_1' => $validatedData['choice_1'],
-            'choice_2' => $validatedData['choice_2'],
-            'choice_3' => $validatedData['choice_3'],
-            'choice_4' => $validatedData['choice_4'],
-            'answer' => $validatedData['answer']
-        ]);
+        $quiz = Quiz::findOrFail($quizId);
 
-        $question->save();  
+        $quiz->questions()->create($request->all());
 
-        return redirect()->route('quizzes.show', $quiz->id)->with('success', 'Question added successfully!');
+        return redirect()->route('quizzes.questions.index', $quizId)
+                         ->with('success', 'Question added successfully.');
     }
 
     /**
      * Display the specified question.
      *
-     * @param  \App\Models\Question  $question
+     * @param  int  $quizId
+     * @param  int  $questionId
      * @return \Illuminate\Http\Response
      */
-    public function show(Question $question)
+    public function show($quizId, $questionId)
     {
-        // Load the related quiz and return the question
-        return response()->json($question->load('quiz'));
+        $quiz = Quiz::findOrFail($quizId);
+        $question = $quiz->questions()->findOrFail($questionId);
+
+        return view('questions.show', compact('quiz', 'question'));
     }
 
     /**
      * Show the form for editing the specified question.
      *
-     * @param  \App\Models\Question  $question
+     * @param  int  $quizId
+     * @param  int  $questionId
      * @return \Illuminate\Http\Response
      */
-    public function edit(Question $question)
+    public function edit($quizId, $questionId)
     {
-        // No implementation needed for now
+        $quiz = Quiz::findOrFail($quizId);
+        $question = $quiz->questions()->findOrFail($questionId);
+
+        return view('question.edit', compact('quiz', 'question'));
     }
 
     /**
-     * Update the specified question in storage.
+     * Update the specified question in the database.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Question  $question
+     * @param  int  $quizId
+     * @param  int  $questionId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Question $question)
+    public function update(Request $request, $quizId, $questionId)
     {
-        $validatedData = $request->validate([
-            'idquiz' => 'sometimes|required|integer|exists:quizzes,id',
-            'question' => 'sometimes|required|string|max:255',
-            'choice_1' => 'sometimes|required|string|max:255',
-            'choice_2' => 'sometimes|required|string|max:255',
-            'choice_3' => 'sometimes|required|string|max:255',
-            'choice_4' => 'sometimes|required|string|max:255',
-            'answer' => 'sometimes|required|string|max:1',
+        $request->validate([
+            'question' => 'required|string|max:255',
+            'choice_1' => 'required|string|max:255',
+            'choice_2' => 'required|string|max:255',
+            'choice_3' => 'required|string|max:255',
+            'choice_4' => 'required|string|max:255',
+            'answer' => 'required|integer|in:1,2,3,4',
         ]);
 
-        // Update the question with validated data
-        $question->update($validatedData);
+        $quiz = Quiz::findOrFail($quizId);
+        $question = $quiz->questions()->findOrFail($questionId);
 
-        return response()->json(['message' => 'Question updated successfully!', 'data' => $question], 200);
+        $question->update($request->all());
+
+        return redirect()->route('quizzes.show', $quizId)
+                         ->with('success', 'Question updated successfully.');
     }
 
     /**
-     * Remove the specified question from storage.
+     * Remove the specified question from the database.
      *
-     * @param  \App\Models\Question  $question
+     * @param  int  $quizId
+     * @param  int  $questionId
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Question $question)
+    public function destroy($quizId, $questionId)
     {
+        $quiz = Quiz::findOrFail($quizId);
+        $question = $quiz->questions()->findOrFail($questionId);
+
         $question->delete();
 
-        return response()->json(['message' => 'Question deleted successfully!'], 200);
+        return redirect()->route('quizzes.questions.index', $quizId)
+                         ->with('success', 'Question deleted successfully.');
     }
 }

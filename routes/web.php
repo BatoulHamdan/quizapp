@@ -11,23 +11,26 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware('auth')->group(function () {
+    // Profile Routes
     Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // Quizzes Routes
     Route::resource('quizzes', QuizController::class);
-    Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
 
     // Questions Routes
-    Route::resource('quizzes.questions', QuestionController::class)->shallow();
+    Route::prefix('quizzes/{quiz}')->group(function () {
+        Route::resource('questions', QuestionController::class, ['except' => ['index']]);
+    });
 
+    // Explicitly define additional routes for clarity (optional)
+    Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
 });
 
 // Users Routes
 Route::resource('users', App\Http\Controllers\UserController::class);
 
-    
 // Results Routes
 Route::resource('results', App\Http\Controllers\ResultController::class);
 
