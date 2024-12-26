@@ -29,10 +29,11 @@ class UserController extends Controller
         DB::insert(
             'INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)',
             [
-                $validatedData['name'],
+                $validatedData['firstname'],
+                $validatedData['lastname'],
                 $validatedData['username'],
                 $validatedData['email'],
-                Hash::make($validatedData['password']), // Hash password before storing
+                Hash::make($validatedData['password']), 
             ]
         );
 

@@ -1,104 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <style>
-        .container {
-            max-width: 500px;
-            margin: auto;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-        }
+@extends('layouts.guest')
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+@section('content')
+    <div class="container mx-auto py-8">
+        <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6 text-center">Log in</h2>
 
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
+            @if(session('status'))
+                <div class="mb-4 bg-green-100 text-green-700 p-4 rounded">
+                    {{ session('status') }}
+                </div>
+            @endif
 
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+            <form action="{{ route('login') }}" method="POST">
+                @csrf
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    @error('email')
+                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
 
-        .alert {
-            padding: 10px;
-            margin-bottom: 20px;
-        }
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" required
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    @error('password')
+                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
 
-        .alert-success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-        }
+                <div class="mb-4 flex items-center justify-between">
+                    <div>
+                        <input type="checkbox" id="remember_me" name="remember"
+                               class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                        <label for="remember_me" class="ml-2 text-sm text-gray-600">Remember me</label>
+                    </div>
+                </div>
 
-        .alert-danger {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-        }
+                <div class="flex items-center justify-center">
+                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow hover:bg-indigo-700">
+                        Log in
+                    </button>
+                </div>
+            </form>
 
-        .text-danger {
-            color: #e3342f;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2 class="text-center">Login</h2>
-
-        @if(session('status'))
-            <div class="alert alert-success">
-                {{ session('status') }}
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Don’t have an account? <a href="{{ route('register') }}" class="text-indigo-500 hover:text-indigo-700">Sign up</a>
+                </p>
             </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
-
-        <form action="{{ route('login') }}" method="POST">
-            @csrf
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                @error('email')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control" required>
-                @error('password')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Login</button>
-            </div>
-        </form>
+        </div>
     </div>
-</body>
-</html>
+@endsection
