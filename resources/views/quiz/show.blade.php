@@ -8,7 +8,7 @@
             <p>Total Questions: {{ $quiz->questions->count() }}</p>
             <p>Created At: {{ $quiz->created_at->format('d M Y, H:i') }}</p>
 
-            <a href="{{ route('quizzes.show', $quiz->id) }}/questions/create" class="w-full bg-indigo-500 text-white px-6 py-3 rounded-lg shadow hover:bg-indigo-600 mt-4">Add Question</a>
+            <a href="{{ route('quizzes.questions.create', $quiz->id) }}" class="w-full bg-indigo-500 text-white px-6 py-3 rounded-lg shadow hover:bg-indigo-600 mt-4">Add Question</a>
 
             <h3 class="mt-6 text-xl font-semibold">Questions:</h3>
             <ul class="list-disc pl-6 space-y-2">

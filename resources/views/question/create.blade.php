@@ -5,7 +5,7 @@
         <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
             <h2 class="text-2xl font-bold mb-6 text-center">Add Question</h2>
 
-            <form action="{{ route('questions.store', $quiz->id) }}" method="POST">
+            <form action="{{ route('quizzes.questions.store', $quiz->id) }}" method="POST">
                 @csrf
 
                 <div class="mb-4">
@@ -54,9 +54,15 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="answer" class="block text-sm font-medium text-gray-700">Answer</label>
-                    <input type="text" id="answer" name="answer" value="{{ old('answer') }}" required
-                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <label for="answer" class="block text-sm font-medium text-gray-700">Correct Answer</label>
+                    <select id="answer" name="answer" required
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="" disabled selected>Select the correct answer</option>
+                        <option value="1" {{ old('answer') == '1' ? 'selected' : '' }}>Choice 1</option>
+                        <option value="2" {{ old('answer') == '2' ? 'selected' : '' }}>Choice 2</option>
+                        <option value="3" {{ old('answer') == '3' ? 'selected' : '' }}>Choice 3</option>
+                        <option value="4" {{ old('answer') == '4' ? 'selected' : '' }}>Choice 4</option>
+                    </select>
                     @error('answer')
                         <span class="text-red-600 text-sm">{{ $message }}</span>
                     @enderror

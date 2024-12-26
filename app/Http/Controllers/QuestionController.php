@@ -14,6 +14,13 @@ class QuestionController extends Controller
      * @param  Quiz  $quiz
      * @return \Illuminate\Http\Response
      */
+
+    public function create(Quiz $quiz)
+    {
+        return view('question.create', compact('quiz'));
+    }
+
+
     public function index(Quiz $quiz)
     {
         // Fetch all questions with their related quizzes
@@ -26,21 +33,9 @@ class QuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function store(Request $request, Quiz $quiz)
     {
-        return view('question.create'); // Return the view for creating a question
-    }
-
-    /**
-     * Store a newly created question in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'idquiz' => 'required|integer|exists:quizzes,id',   // Validate quiz ID exists
+        $validatedData = $request->validate([  
             'question' => 'required|string|max:255',
             'choice_1' => 'required|string|max:255',
             'choice_2' => 'required|string|max:255',
@@ -49,10 +44,20 @@ class QuestionController extends Controller
             'answer' => 'required|string|max:1',
         ]);
 
-        // Create a question using validated data
-        $question = Question::create($validatedData);
+        // Insert question into the questions table
+        $question = new Question([
+            'idquiz' => $quiz->id,   
+            'question' => $validatedData['question'],
+            'choice_1' => $validatedData['choice_1'],
+            'choice_2' => $validatedData['choice_2'],
+            'choice_3' => $validatedData['choice_3'],
+            'choice_4' => $validatedData['choice_4'],
+            'answer' => $validatedData['answer']
+        ]);
 
-        return response()->json(['message' => 'Question created successfully!', 'data' => $question], 201);
+        $question->save();  
+
+        return redirect()->route('quizzes.show', $quiz->id)->with('success', 'Question added successfully!');
     }
 
     /**

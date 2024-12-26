@@ -20,9 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
 
     // Questions Routes
-    Route::resource('quizzes/{quiz}/questions', App\Http\Controllers\QuestionController::class);
-    Route::get('/quizzes/{quiz}/questions/create', [QuizController::class, 'create'])->name('questions.create');
-
+    Route::resource('quizzes.questions', QuestionController::class)->shallow();
 
 });
 
