@@ -79,21 +79,18 @@ class QuizController extends Controller
         return redirect()->route('quiz.index')->with('success', 'Quiz deleted successfully!');
     }
 
-    //View specific quiz
     public function show(Quiz $quiz)
     {
-        // Ensure the quiz belongs to the authenticated user
-        if (Auth::id() !== $quiz->user_id) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Load questions related to the quiz
+        $quiz->load('questions');
 
-        // Get all questions related to this quiz
-        $questions = $quiz->questions;  // Using the relationship defined in the Question model
-
-        return view('quiz.show', compact('quiz', 'questions'));
+        // Pass the quiz and its questions to the view
+        return view('quiz.show', [
+            'quiz' => $quiz,
+            'questions' => $quiz->questions, // Pass related questions explicitly
+        ]);
     }
 
-    //View all quizzes
     public function index()
     {
         $userId = Auth::id(); // Get the authenticated user's ID

@@ -11,7 +11,7 @@
                 Create Quiz
             </button>
             <br><br>
-            <button onclick="window.location.href='{{ route('quizzes.show') }}'" class="w-full bg-gray-600 text-white px-6 py-3 rounded-lg shadow hover:bg-gray-700">
+            <button onclick="window.location.href='{{ route('quizzes.index') }}'" class="w-full bg-gray-600 text-white px-6 py-3 rounded-lg shadow hover:bg-gray-700">
                 View Quizzes
             </button>
 

@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
 
     // Questions Routes
     Route::resource('quizzes/{quiz}/questions', App\Http\Controllers\QuestionController::class);
+    Route::get('/quizzes/{quiz}/questions/create', [QuizController::class, 'create'])->name('questions.create');
+
 
 });
 
