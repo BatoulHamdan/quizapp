@@ -116,10 +116,10 @@ body {
     width: 100%;
     background-color: #f8f9fa;
     text-align: center;
-    padding: 20px 0;
     border-top: 1px solid #ddd;
-    position: relative;
-    bottom: 0;
+    position: fixed; /* Fixed footer */
+    bottom: 0;       /* Place it at the bottom */
+    left: 0;
 }
 
 .footer .container {
@@ -150,4 +150,10 @@ body {
 
 .footer-links a:hover {
     color: #0056b3;
+}
+
+main {
+    min-height: 100vh; 
+    padding: 20px;
+    background-color: #f9f9f9; 
 }
