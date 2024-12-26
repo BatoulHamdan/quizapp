@@ -9,12 +9,16 @@ class Quiz extends Model
 {
     use HasFactory;
 
-    protected $table = 'quizzes';
-    protected $primaryKey = 'idquiz';
-    protected $fillable = ['id', 'title', 'total'];
+    protected $table = 'quizzes'; // Set the table name
+    protected $primaryKey = 'id'; // Set the primary key
+    public $incrementing = true; // Ensure primary key is auto-incrementing
+    public $timestamps = true; // Enable timestamps
+
+    protected $fillable = ['title', 'total', 'user_id']; // Allow these fields
 
     public function questions()
     {
-        return $this->hasMany(Question::class, 'idquiz', 'idquiz');  // Define relationship with Question
+        return $this->hasMany(Question::class, 'idquiz', 'id'); // Define relationship to questions
     }
 }
+

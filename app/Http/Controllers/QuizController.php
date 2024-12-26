@@ -4,73 +4,44 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class QuizController extends Controller
 {
     /**
-     * Display a listing of the quizzes.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $quizzes = Quiz::with('questions')->get();  // Fetch all quizzes with their related questions
-        return response()->json($quizzes);
-    }
-
-    /**
-     * Show the form for creating a new quiz.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created quiz in storage.
+     * Store a newly created quiz in storage using prepared statements.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    public function create(Request $request)
+    {
+        return view('quiz.create');
+    }
+
     public function store(Request $request)
     {
+        // Validate request
         $validatedData = $request->validate([
-            'id' => 'required|integer',
             'title' => 'required|string|max:255',
-            'total' => 'required|integer',
         ]);
 
-        $quiz = Quiz::create($validatedData);
+        // Use prepared statement to insert data
+        DB::insert(
+            'INSERT INTO quizzes (user_id, title, total, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())',
+            [
+                Auth::id(), // Set user_id to the currently authenticated user's ID
+                $validatedData['title'],
+                0, // Default value for total
+            ]
+        );
 
-        return response()->json(['message' => 'Quiz created successfully!', 'data' => $quiz], 201);
+        return redirect()->route('quiz.index')->with('success', 'Quiz created successfully!');
     }
-
     /**
-     * Display the specified quiz.
-     *
-     * @param  \App\Models\Quiz  $quiz
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Quiz $quiz)
-    {
-        return response()->json($quiz->load('questions'));  // Load related questions and return the quiz
-    }
-
-    /**
-     * Show the form for editing the specified quiz.
-     *
-     * @param  \App\Models\Quiz  $quiz
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Quiz $quiz)
-    {
-        //
-    }
-
-    /**
-     * Update the specified quiz in storage.
+     * Update the specified quiz using prepared statements.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Quiz  $quiz
@@ -78,26 +49,56 @@ class QuizController extends Controller
      */
     public function update(Request $request, Quiz $quiz)
     {
+        // Validate request
         $validatedData = $request->validate([
             'title' => 'sometimes|required|string|max:255',
-            'total' => 'sometimes|required|integer',
         ]);
 
-        $quiz->update($validatedData);
+        // Use prepared statement to update quiz
+        DB::update(
+            'UPDATE quizzes SET title = ?, updated_at = NOW() WHERE id = ?',
+            [
+                $validatedData['title'] ?? $quiz->title,
+                $quiz->id,
+            ]
+        );
 
-        return response()->json(['message' => 'Quiz updated successfully!', 'data' => $quiz], 200);
+        return redirect()->route('quiz.index')->with('success', 'Quiz updated successfully!');
     }
 
     /**
-     * Remove the specified quiz from storage.
+     * Remove the specified quiz from storage using prepared statements.
      *
      * @param  \App\Models\Quiz  $quiz
      * @return \Illuminate\Http\Response
      */
     public function destroy(Quiz $quiz)
     {
-        $quiz->delete();
+        DB::delete('DELETE FROM quizzes WHERE id = ?', [$quiz->id]);
 
-        return response()->json(['message' => 'Quiz deleted successfully!'], 200);
+        return redirect()->route('quiz.index')->with('success', 'Quiz deleted successfully!');
+    }
+
+    //View specific quiz
+    public function show(Quiz $quiz)
+    {
+        // Ensure the quiz belongs to the authenticated user
+        if (Auth::id() !== $quiz->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Get all questions related to this quiz
+        $questions = $quiz->questions;  // Using the relationship defined in the Question model
+
+        return view('quiz.show', compact('quiz', 'questions'));
+    }
+
+    //View all quizzes
+    public function index()
+    {
+        $userId = Auth::id(); // Get the authenticated user's ID
+        $quizzes = Quiz::where('user_id', $userId)->get(); 
+
+        return view('quiz.index', compact('quizzes')); 
     }
 }
