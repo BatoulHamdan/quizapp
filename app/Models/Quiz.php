@@ -14,7 +14,7 @@ class Quiz extends Model
     public $incrementing = true; // Ensure primary key is auto-incrementing
     public $timestamps = true; // Enable timestamps
 
-    protected $fillable = ['title', 'total', 'user_id']; // Allow these fields
+    protected $fillable = ['title', 'user_id']; // Allow these fields
 
     public function questions()
     {

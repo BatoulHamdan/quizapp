@@ -28,18 +28,23 @@ class QuizController extends Controller
             'title' => 'required|string|max:255',
         ]);
 
-        // Use prepared statement to insert data
-        DB::insert(
-            'INSERT INTO quizzes (user_id, title, total, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())',
-            [
-                Auth::id(), // Set user_id to the currently authenticated user's ID
-                $validatedData['title'],
-                0, // Default value for total
-            ]
-        );
+        try {
+            // Use prepared statement to insert data
+            DB::insert(
+                'INSERT INTO quizzes (user_id, title, created_at, updated_at) VALUES (?, ?, NOW(), NOW())',
+                [
+                    Auth::id(), // Set user_id to the currently authenticated user's ID
+                    $validatedData['title'],
+                ]
+            );
 
-        return redirect()->route('quizzes.index')->with('success', 'Quiz created successfully!');
+            return redirect()->route('quizzes.index')->with('success', 'Quiz created successfully!');
+        } catch (\Exception $e) {
+            // Handle any potential errors
+            return redirect()->back()->with('error', 'An error occurred while creating the quiz.');
+        }
     }
+
     /**
      * Update the specified quiz using prepared statements.
      *
