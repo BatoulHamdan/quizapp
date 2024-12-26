@@ -38,7 +38,7 @@ class QuizController extends Controller
             ]
         );
 
-        return redirect()->route('quiz.index')->with('success', 'Quiz created successfully!');
+        return redirect()->route('quizzes.index')->with('success', 'Quiz created successfully!');
     }
     /**
      * Update the specified quiz using prepared statements.
@@ -47,6 +47,14 @@ class QuizController extends Controller
      * @param  \App\Models\Quiz  $quiz
      * @return \Illuminate\Http\Response
      */
+
+     public function edit($quizId)
+     {
+        $quiz = Quiz::findOrFail($quizId);
+         
+        return view('quiz.edit', compact('quiz'));
+     }
+
     public function update(Request $request, Quiz $quiz)
     {
         // Validate request
@@ -63,7 +71,7 @@ class QuizController extends Controller
             ]
         );
 
-        return redirect()->route('quiz.index')->with('success', 'Quiz updated successfully!');
+        return redirect()->route('quizzes.show', $quiz)->with('success', 'Quiz updated successfully!');
     }
 
     /**
@@ -76,7 +84,7 @@ class QuizController extends Controller
     {
         DB::delete('DELETE FROM quizzes WHERE id = ?', [$quiz->id]);
 
-        return redirect()->route('quiz.index')->with('success', 'Quiz deleted successfully!');
+        return redirect()->route('quizzes.index')->with('success', 'Quiz deleted successfully!');
     }
 
     public function show(Quiz $quiz)

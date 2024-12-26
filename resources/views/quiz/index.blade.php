@@ -17,7 +17,8 @@
                                     <p>Total Questions: {{ $quiz->questions->count() }}</p>
                                 </div>
                                 <div class="flex space-x-4">
-                                    <a  href="{{ route('quizzes.show', $quiz->id) }}" class="btn btn-info">View</a>
+                                    <a href="{{ route('quizzes.show', $quiz->id) }}" class="btn btn-info">View</a>
+                                    <a href="{{ route('quizzes.edit', $quiz->id) }}" class="btn btn-warning">Edit</a>
                                     <form action="{{ route('quizzes.destroy', $quiz->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this quiz?');">
                                         @csrf
                                         @method('DELETE')

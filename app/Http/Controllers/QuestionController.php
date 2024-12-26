@@ -131,7 +131,7 @@ class QuestionController extends Controller
 
         $question->delete();
 
-        return redirect()->route('quizzes.questions.index', $quizId)
+        return redirect()->route('quizzes.show', $quizId)
                          ->with('success', 'Question deleted successfully.');
     }
 }
