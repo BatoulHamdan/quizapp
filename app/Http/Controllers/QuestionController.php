@@ -30,7 +30,7 @@ class QuestionController extends Controller
     public function create($quizId)
     {
         $quiz = Quiz::findOrFail($quizId);
-        return view('questions.create', compact('quiz'));
+        return view('question.create', compact('quiz'));
     }
 
     /**
@@ -48,15 +48,19 @@ class QuestionController extends Controller
             'choice_2' => 'required|string|max:255',
             'choice_3' => 'required|string|max:255',
             'choice_4' => 'required|string|max:255',
-            'answer' => 'required|integer|in:1,2,3,4',  // Assuming 1-4 for choice options
+            'answer' => 'required|integer|in:1,2,3,4', // 1-4 for choices
         ]);
 
         $quiz = Quiz::findOrFail($quizId);
 
-        $quiz->questions()->create($request->all());
+        // Save the correct choice value in the `answer` field
+        $data = $request->all();
+        $data['answer'] = $request->input("choice_{$request->answer}");
 
-        return redirect()->route('quizzes.questions.index', $quizId)
-                         ->with('success', 'Question added successfully.');
+        $quiz->questions()->create($data);
+
+        return redirect()->route('quizzes.index', $quizId)
+                        ->with('success', 'Question added successfully.');
     }
 
     /**
@@ -111,11 +115,15 @@ class QuestionController extends Controller
         $quiz = Quiz::findOrFail($quizId);
         $question = $quiz->questions()->findOrFail($questionId);
 
-        $question->update($request->all());
+        $data = $request->all();
+        $data['answer'] = $request->input("choice_{$request->answer}");
+
+        $question->update($data);
 
         return redirect()->route('quizzes.show', $quizId)
-                         ->with('success', 'Question updated successfully.');
+                        ->with('success', 'Question updated successfully.');
     }
+
 
     /**
      * Remove the specified question from the database.

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Result;
+use App\Models\Quiz;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ResultController extends Controller
 {
@@ -15,7 +15,7 @@ class ResultController extends Controller
      */
     public function index()
     {
-        $results = Result::all();  // Fetch all results
+        $results = Result::with('quiz')->get();  // Load related quiz data
         return response()->json($results);
     }
 
@@ -30,25 +30,6 @@ class ResultController extends Controller
     }
 
     /**
-     * Store a newly created result in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'idquiz' => 'required|integer',
-            'name' => 'required|string|max:255',
-            'result' => 'required|numeric',
-        ]);
-
-        $result = Result::create($validatedData);
-
-        return response()->json(['message' => 'Result created successfully!', 'data' => $result], 201);
-    }
-
-    /**
      * Display the specified result.
      *
      * @param  \App\Models\Result  $result
@@ -56,18 +37,10 @@ class ResultController extends Controller
      */
     public function show(Result $result)
     {
-        return response()->json($result);
-    }
+        // Load the quiz relationship
+        $result->load('quiz');
 
-    /**
-     * Show the form for editing the specified result.
-     *
-     * @param  \App\Models\Result  $result
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Result $result)
-    {
-        //
+        return view('quiz.result', compact('result'));
     }
 
     /**
@@ -102,4 +75,41 @@ class ResultController extends Controller
 
         return response()->json(['message' => 'Result deleted successfully!'], 200);
     }
+
+    public function score(Request $request, $quizId)
+{
+    // Validate the input
+    $request->validate([
+        'name' => 'required|string|max:255',  // User's name
+        'answers' => 'required|array',       // Answers submitted as an associative array
+    ]);
+
+    // Retrieve the quiz and associated questions
+    $quiz = Quiz::findOrFail($quizId);
+    $questions = $quiz->questions; // Assuming `questions` is a relationship in the `Quiz` model
+    $answers = $request->input('answers'); // Submitted answers: question_id => selected_option
+
+    // Initialize the score
+    $score = 0;
+
+    // Loop through each question to calculate the score
+    foreach ($questions as $question) {
+        // Check if the submitted answer matches the correct answer
+        if (isset($answers[$question->id]) && $answers[$question->id] == $question->answer) {
+            $score++;
+        }
+    }
+
+    // Save the result to the database
+    $result = Result::create([
+        'idquiz' => $quizId,           // Quiz ID
+        'name' => $request->input('name'), // User's name
+        'result' => $score,            // Calculated score
+    ]);
+
+    // Redirect to a result view or return JSON
+    return redirect()->route('results.show', $result->id)
+                     ->with('success', 'Quiz submitted successfully!');
+}
+
 }

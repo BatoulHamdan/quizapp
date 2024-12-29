@@ -10,11 +10,11 @@ class Result extends Model
     use HasFactory;
 
     protected $table = 'results';
-    protected $primaryKey = 'idpart';
-    protected $fillable = ['id', 'idquiz', 'name', 'result'];
+    protected $primaryKey = 'id';
+    protected $fillable = ['idquiz', 'name', 'result'];
 
     public function quiz()
     {
-        return $this->belongsTo(Quiz::class, 'idquiz', 'idquiz');  // Define relationship with Quiz
+        return $this->belongsTo(Quiz::class, 'idquiz', 'id');  
     }
 }

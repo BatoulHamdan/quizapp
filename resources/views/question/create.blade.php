@@ -5,7 +5,7 @@
         <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
             <h2 class="text-2xl font-bold mb-6 text-center">Add Question</h2>
 
-            <form action="{{ route('quizzes.questions.store', $quiz->id) }}" method="POST">
+            <form action="{{ route('questions.store', $quiz->id) }}" method="POST">
                 @csrf
 
                 <div class="mb-4">

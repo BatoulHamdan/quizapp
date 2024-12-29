@@ -6,6 +6,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ResultController;
+use App\Http\Middleware\QuizSolveMiddleware;
 
 // Home route
 Route::get('/', function () {
@@ -31,22 +32,17 @@ Route::middleware('auth')->group(function () {
     Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
 });
 
-// Route group for quiz-solving with restricted access
-Route::middleware('quiz.solve')->group(function () {
-    // Quiz-solving routes
-    Route::get('quiz/{quiz}/solve', [QuizController::class, 'solve'])->name('quiz.solve');
-    Route::post('quiz/{quiz}/submit', [QuizController::class, 'submit'])->name('quiz.submit');
-});
+// Route group for quiz-solving 
+Route::get('quiz/{quiz}/solve', [QuizController::class, 'solve'])
+    ->name('quizzes.solve');
+
+Route::post('quiz/{quiz}/submit', [ResultController::class, 'score'])
+    ->name('results.score');
 
 // Users Routes
 Route::resource('users', UserController::class);
 
 // Results Routes
-Route::resource('results', ResultController::class);
-
-// Catch unauthorized access to restricted routes
-Route::get('/restricted-access', function () {
-    return view('restricted'); // Create a view named "restricted"
-})->name('restricted.access');
+Route::get('results/{result}', [ResultController::class, 'show'])->name('results.show');
 
 require __DIR__ . '/auth.php';
