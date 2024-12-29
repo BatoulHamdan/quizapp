@@ -11,19 +11,13 @@
             <!-- Quiz Link Generator Section -->
             <div class="mt-8">
                 <h3 class="text-xl font-semibold mb-4">Quiz Link Generator</h3>
-                <form id="quizForm">
-                    <div class="space-y-4">
-                        <button class="header__button bg-green-500 text-white px-4 py-2 rounded w-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500" 
-                                type="button" onclick="generateQuizLink()" aria-label="Generate Quiz Link">
-                            Generate Quiz Link
-                        </button>
-                        <textarea id="quizLink" readonly class="w-full border p-2 rounded"></textarea>
-                        <button class="header__button bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                type="button" onclick="copyQuizLink()" aria-label="Copy Quiz Link">
-                            Copy Link
-                        </button>
-                    </div>
-                </form>
+                <div class="space-y-4">
+                    <button class="header__button bg-green-500 text-white px-4 py-2 rounded w-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500" 
+                            type="button" onclick="generateAndCopyQuizLink()" aria-label="Generate and Copy Quiz Link">
+                        Copy Quiz Link
+                    </button>
+                    <textarea id="quizLink" class="w-full border p-2 rounded hidden" readonly></textarea>
+                </div>
             </div>
 
             @if ($quiz->questions->count() > 0)
@@ -69,18 +63,9 @@
 
     <!-- JavaScript for Quiz Link Generator -->
     <script>
-        function generateQuizLink() {
+        function generateAndCopyQuizLink() {
             const quizLink = `${window.location.origin}/quiz/{{ $quiz->id }}/solve`;
-            document.getElementById('quizLink').value = quizLink;
-        }
-
-        function copyQuizLink() {
-            const quizLinkElement = document.getElementById('quizLink');
-            if (quizLinkElement.value.trim() === "") {
-                alert("Please generate the quiz link first!");
-                return;
-            }
-            navigator.clipboard.writeText(quizLinkElement.value)
+            navigator.clipboard.writeText(quizLink)
                 .then(() => {
                     alert('Quiz link copied to clipboard!');
                 })

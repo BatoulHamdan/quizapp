@@ -59,7 +59,7 @@ class QuestionController extends Controller
 
         $quiz->questions()->create($data);
 
-        return redirect()->route('quizzes.index', $quizId)
+        return redirect()->route('quizzes.show', $quizId)
                         ->with('success', 'Question added successfully.');
     }
 

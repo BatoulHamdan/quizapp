@@ -9,7 +9,19 @@
                 @if($result)
                     <p class="text-lg mb-4">Quiz Name: <strong>{{ $result->quiz->title ?? 'Unknown Quiz' }}</strong></p>
                     <p class="text-lg mb-4">Participant Name: <strong>{{ $result->name }}</strong></p>
-                    <p class="text-lg mb-4">Your Score: <strong>{{ $result->result }}</strong></p>
+                    <p class="text-lg mb-4">Your Score: <strong>{{ $result->result }}</strong> / <strong>{{ $result->quiz->questions->count() }}</strong></p>
+
+                    @php
+                        $totalQuestions = $result->quiz->questions->count();
+                        $score = $result->result;
+                        $passingScore = ceil($totalQuestions / 2); // 50% as passing score
+                    @endphp
+
+                    @if($score >= $passingScore)
+                        <p class="text-green-500">Congratulations!</p>
+                    @else
+                        <p class="text-red-500">Hard Luck! Better luck next time.</p>
+                    @endif
                 @else
                     <p class="text-red-500">No result found.</p>
                 @endif

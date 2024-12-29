@@ -3,9 +3,13 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="container mx-auto py-8">
-        <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <h1 class="text-2xl font-bold mb-6 text-center">Welcome Back, {{ request('username') }}</h1>
+    <main class="container mx-auto p-6">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold">Welcome to Quizziz</h1>
+            <p class="text-lg text-gray-600">Create and participate in interactive quizzes with ease!</p>
+        </header>
+        <div class="image">
+            <img src="{{ asset('images/pic.jpg') }}" alt="Quizziz Image" class="rounded-lg shadow-lg max-w-full">
         </div>
-    </div>
+    </main>
 @endsection
