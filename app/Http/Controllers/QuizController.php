@@ -111,4 +111,62 @@ class QuizController extends Controller
 
         return view('quiz.index', compact('quizzes')); 
     }
+
+    /**
+     * Display the quiz solving page.
+     *
+     * @param  int  $quizId
+     * @return \Illuminate\Http\Response
+     */
+    public function solve($quizId)
+    {
+        $quiz = Quiz::with('questions')->findOrFail($quizId); // Load quiz with related questions
+
+        // Store session flag for restricted routes
+        session(['solving_quiz' => true]);
+
+        return view('quiz.solve', compact('quiz'));
+    }
+
+    /**
+     * Handle the submission of the quiz.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $quizId
+     * @return \Illuminate\Http\Response
+     */
+    public function submit(Request $request, $quizId)
+    {
+        $quiz = Quiz::with('questions')->findOrFail($quizId);
+
+        // Validate answers input
+        $validatedData = $request->validate([
+            'answers' => 'required|array',
+            'answers.*' => 'required|integer', // Ensure each answer is an integer (e.g., question option ID)
+        ]);
+
+        $answers = $validatedData['answers'];
+        $score = 0;
+
+        // Calculate score by comparing answers
+        foreach ($quiz->questions as $question) {
+            if (isset($answers[$question->id]) && $answers[$question->id] == $question->correct_option_id) {
+                $score++;
+            }
+        }
+
+        // Clear session flag
+        session()->forget('solving_quiz');
+
+        // Store result in database (optional)
+        DB::table('results')->insert([
+            'quiz_id' => $quiz->id,
+            'user_id' => Auth::id(),
+            'score' => $score,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('results.index')->with('success', "You scored $score out of " . $quiz->questions->count());
+    }
 }
