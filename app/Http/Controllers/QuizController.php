@@ -9,13 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class QuizController extends Controller
 {
-    /**
-     * Store a newly created quiz in storage using prepared statements.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
     public function create(Request $request)
     {
         return view('quiz.create');
@@ -23,7 +16,6 @@ class QuizController extends Controller
 
     public function store(Request $request)
     {
-        // Validate request
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
         ]);
@@ -45,14 +37,6 @@ class QuizController extends Controller
         }
     }
 
-    /**
-     * Update the specified quiz using prepared statements.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Quiz  $quiz
-     * @return \Illuminate\Http\Response
-     */
-
      public function edit($quizId)
      {
         $quiz = Quiz::findOrFail($quizId);
@@ -62,12 +46,10 @@ class QuizController extends Controller
 
     public function update(Request $request, Quiz $quiz)
     {
-        // Validate request
         $validatedData = $request->validate([
             'title' => 'sometimes|required|string|max:255',
         ]);
 
-        // Use prepared statement to update quiz
         DB::update(
             'UPDATE quizzes SET title = ?, updated_at = NOW() WHERE id = ?',
             [
@@ -79,12 +61,6 @@ class QuizController extends Controller
         return redirect()->route('quizzes.show', $quiz)->with('success', 'Quiz updated successfully!');
     }
 
-    /**
-     * Remove the specified quiz from storage using prepared statements.
-     *
-     * @param  \App\Models\Quiz  $quiz
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Quiz $quiz)
     {
         DB::delete('DELETE FROM quizzes WHERE id = ?', [$quiz->id]);
@@ -112,12 +88,6 @@ class QuizController extends Controller
         return view('quiz.index', compact('quizzes')); 
     }
 
-    /**
-     * Display the quiz solving page.
-     *
-     * @param  int  $quizId
-     * @return \Illuminate\Http\Response
-     */
     public function solve($quizId)
     {
         $quiz = Quiz::with('questions')->findOrFail($quizId);  
