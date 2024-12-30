@@ -4,7 +4,7 @@
         <a href="{{ url('/dashboard') }}" class="logo">Quizziz</a>
         <ul class="nav-links">
                 <li><a href="{{ route('quizzes.create') }}">Create Quiz</a></li>
-                <li><a href="{{ route('quizzes.index') }}">View Quizzes</a></li>
+                <li><a href="{{ route('quizzes.index') }}">Quizzes</a></li>
                 <li><a href="{{ route('profile.show') }}">Profile</a></li>
                 <li>
                     <form action="{{ route('logout') }}" method="POST" class="logout-form">
