@@ -1,7 +1,7 @@
 <nav class="navbar">
     <div class="container">
-    @auth
         <a href="{{ url('/dashboard') }}" class="logo">Quizziz</a>
+        @auth
         <ul class="nav-links">
                 <li><a href="{{ route('quizzes.create') }}">Create Quiz</a></li>
                 <li><a href="{{ route('quizzes.index') }}">Quizzes</a></li>
