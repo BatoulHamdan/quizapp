@@ -22,17 +22,17 @@ Route::middleware('auth')->group(function () {
 
     // Quizzes Routes
     Route::resource('quizzes', QuizController::class);
+    Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('quizzes/{quizId}/results', [ResultController::class, 'index'])->name('quizzes.results');
 
-    // Questions Routes (nested under quizzes)
+    // Questions Routes
     Route::prefix('quizzes/{quiz}')->group(function () {
         Route::resource('questions', QuestionController::class, ['except' => ['index']]);
     });
-
-    // Explicitly define additional routes for clarity (optional)
-    Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+    
 });
 
-// Route group for quiz-solving 
+// Quiz-Solving Routes
 Route::get('quiz/{quiz}/solve', [QuizController::class, 'solve'])
     ->name('quizzes.solve');
 

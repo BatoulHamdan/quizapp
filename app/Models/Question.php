@@ -15,6 +15,6 @@ class Question extends Model
 
     public function quiz()
     {
-        return $this->belongsTo(Quiz::class, 'idquiz', 'id');  // Define relationship with Quiz
+        return $this->belongsTo(Quiz::class, 'idquiz', 'id'); 
     }
 }

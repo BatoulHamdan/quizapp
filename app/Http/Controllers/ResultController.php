@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 
 class ResultController extends Controller
 {
-    public function index()
+    public function index($quizId)
     {
-        $results = Result::with('quiz')->get();  
-        return response()->json($results);
+        $quiz = Quiz::with('results')->findOrFail($quizId);  
+        $results = $quiz->results; 
+        return view('quiz.results', compact('quiz', 'results'));
     }
-
+    
     public function create()
     {
         //

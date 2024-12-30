@@ -14,7 +14,7 @@
                     @php
                         $totalQuestions = $result->quiz->questions->count();
                         $score = $result->result;
-                        $passingScore = ceil($totalQuestions / 2); // 50% as passing score
+                        $passingScore = ceil($totalQuestions / 2); 
                     @endphp
 
                     @if($score >= $passingScore)
